@@ -1,5 +1,5 @@
 ---
-title: "como usar quarto"
+title: "Como usar quarto"
 author: "Flavio Lozano-Isla"
 format:
   html:
@@ -8,7 +8,7 @@ format:
     number-sections: true
     embed-resources: true
     output-file: index
-  ---
+---
 
 # Quarto
 
