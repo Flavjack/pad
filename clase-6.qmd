@@ -68,7 +68,6 @@ Esta es una formula cualquiera $$\frac{\left(2x\ -\ 1\right)^2\ -\ 1}{4}\ =\ k$$
 ```{r}
 source('https://inkaverse.com/setup.r')
 
-
 url <- "https://docs.google.com/spreadsheets/d/15r7ZwcZZHbEgltlF6gSFvCTFA-CFzVBWwg3mFlRyKPs/edit?gid=172957346#gid=172957346"
 
 gs <- url %>% 
@@ -150,7 +149,7 @@ model
 ```
 
 
-# Comparación de medias
+# Agricolae: Comparación de medias
 
 ```{r}
 modelo <- lm(formula = lfa ~  bloque + riego + geno + riego*geno
@@ -185,15 +184,55 @@ str(grupos)
 ```{r}
 ggplot(grupos, aes(x = geno, y = lfa, fill = riego)) +
   geom_bar(stat = "identity", position = "dodge", color = "black") +
+  geom_text(aes(label = groups, y = lfa + 0.05), 
+            position = position_dodge(width = 0.9), 
+            vjust = 0) +
   labs(x = "Genotipo", y = "LFA", fill = "Riego") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   ggtitle("Gráfico de barras: LFA por genotipo y riego")
+
 ```
 
+# emmeans: comparación de medias
 
+```{r}
+modelo <- lme4::lmer(hi ~ (1|bloque) + geno*riego
+                     , data = fb)
 
+anova(modelo)
 
+cm1 <- emmeans(modelo, ~ geno | riego) %>% 
+  cld(Letters = letters, reversed = T)
+
+cm1
+
+cm2 <- emmeans(modelo, ~ riego | geno) %>% 
+  cld(Letters = letters, reversed = T)
+cm2
+
+cm3 <- emmeans(modelo, ~ riego * geno) %>% 
+  cld(Letters = letters, reversed = T)
+cm3
+```
+
+## grafico
+
+```{r}
+dtcm <- as.data.frame(cm2) %>% 
+  rename(sig = ".group")
+
+ggplot(dtcm, aes(x = geno, y = emmean, fill = riego)) +
+  geom_bar(stat = "identity", position = "dodge", color = "black") +
+  geom_text(aes(label = sig, y = emmean*1.05),
+            position = position_dodge(width = 0.9),
+            vjust = 0) +
+  labs(x = "Genotipo", y = "HI", fill = "Riego") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  ggtitle("Gráfico de barras: HI por genotipo y riego")
+
+```
 
 
 
