@@ -89,23 +89,21 @@ modelo <- aov(formula = lfa ~  bloque + riego + geno + riego*geno
 
 anova(modelo)
 
-plot(modelo)
+# plot(modelo)
 ```
 
 ### boxplot
 
 ```{r}
-
 ggplot(fb, aes(x = geno, y = lfa, colour = riego)) +
   geom_boxplot(outlier.colour = "red", outlier.shape = 16, outlier.size = 2) +
   labs(title = "Boxplot con interacción de niveles de riego y genotipo",
        x = "Interacción Riego y Genotipo",
-       y = "Area Folicar (cm^2)")
+       y = "Area Folicar (cm^2)") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Inclinar etiquetas del eje X
 
 ```
-
 
 ## Modelo lineal: hi
 
@@ -115,7 +113,7 @@ modelo <- aov(formula = hi ~  bloque + riego + geno + riego*geno
 
 anova(modelo)
 
-plot(modelo)
+# plot(modelo)
 ```
 
 
@@ -129,8 +127,7 @@ model <- lme4::lmer(lfa ~ riego + geno + riego*geno + (1|bloque), data = fb)
 
 anova(model)
 
-plot(modelo)
-
+# plot(modelo)
 
 ol <- boxplot(lfa ~ riego*geno, fb)
 ol
@@ -292,7 +289,7 @@ list(p1, p2) %>%
 ### Box plot
 
 ```{r}
-fb %>% 
+p1 <- fb %>% 
   ggplot(data = ., aes(x = geno, y = hi, fill = riego)) +
    geom_boxplot() +
   labs(x = "Genotipos"
@@ -304,12 +301,14 @@ fb %>%
        ) +
   theme_classic() +
   theme(plot.title = element_text(hjust = 0.5))
+
+p1
 ```
 
 ## Scater plot
 
 ```{r}
-fb %>% 
+p2 <- fb %>% 
   ggplot(data = .
          , aes(x = twue, y = hi, color = riego)) +
   geom_point() +
@@ -322,6 +321,8 @@ fb %>%
        , caption = "n = 150", 
        ) +
   theme_bw()
+
+p2
 ```
 
 ## Datos resumidos
@@ -345,12 +346,50 @@ grupos <- tukey_result$groups %>%
 ```
 
 ```{r}
-grupos %>% 
+p3 <- grupos %>% 
   ggplot(data = .
          , aes(x = geno, y = lfa, fill = riego)) +
   geom_col(position = position_dodge2(preserve = "single"))
+
+p3
 ```
 
+```{r}
+library(psych)
+
+p4 <- function() {
+  
+    fb %>% 
+  select_if(is.numeric) %>% 
+  dplyr::select(!c("block")) %>% 
+  pairs.panels(x = .
+               , hist.col="red"
+               , pch = 21
+               , stars = TRUE
+               , scale = FALSE
+               , lm = TRUE
+               ) 
+}
+  
+p4
+```
+
+# Imagenes in grids
+
+```{r}
+library(cowplot)
+
+plot <- list(p1, p2, p3, p4) %>% 
+  plot_grid(plotlist = .
+            , ncol = 2
+            , labels = "auto"
+            )
+
+ggsave2(filename = "plot-01.jpg", units = "cm"
+        , width = 30*2, height = 15*2.5)
+
+include_graphics("plot-01.jpg")
+```
 
 
 
