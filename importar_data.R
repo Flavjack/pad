@@ -1,56 +1,43 @@
 # -------------------------------------------------------------------------
-# Importanción de base de datos -------------------------------------------
+# importar datos ----------------------------------------------------------
 # -------------------------------------------------------------------------
-
 
 # importar csv ------------------------------------------------------------
 
-csvdt <- read.csv(file = "data/LA MOLINA 2014 POTATO WUE (FB) - fb.csv")
+library(readr)
+dtx <- read_csv("C:/Users/LENOVO/Downloads/LA MOLINA 2014 POTATO WUE (FB) - fb (1).csv")
+View(dtx)
 
 
-# importar tsv ------------------------------------------------------------
-
-datos <- read.delim("data/LA MOLINA 2014 POTATO WUE (FB) - fb.tsv"
-                    , sep = "\t", header = TRUE)
-
-# import xlsx -------------------------------------------------------------
-
-library(openxlsx)
-
-dtxlsx <- openxlsx::read.xlsx(xlsxFile = "data/LA MOLINA 2014 POTATO WUE (FB).xlsx"
-                              , sheet = "fb")
-
-
-# importar RStudio --------------------------------------------------------
+# importar xlsx -----------------------------------------------------------
 
 library(readxl)
+db <- read_excel("C:/Users/LENOVO/Downloads/LA MOLINA 2014 POTATO WUE (FB).xlsx", 
+                 sheet = "fb")
+View(db)
 
-fb <- read_excel("data/LA MOLINA 2014 POTATO WUE (FB).xlsx", 
-                                            sheet = "fb")
-View(fb)
+library(readxl)
+bd <- read_excel("C:/Users/LENOVO/Downloads/LA MOLINA 2014 POTATO WUE (FB).xlsx", 
+                 sheet = "fb")
+View(bd)
 
-# imporat de Google Sheets
 
-library(inti) # autentificar con google
+# google sheets -----------------------------------------------------------
+
 library(googlesheets4)
+library(tidyverse)
+
+# 1. darle el url
+# 2. Extraer información de la hoja de calculo
+# 3. Importar hoja de calculo
 
 url <- "https://docs.google.com/spreadsheets/d/15r7ZwcZZHbEgltlF6gSFvCTFA-CFzVBWwg3mFlRyKPs/edit?gid=172957346#gid=172957346"
 
-gs <- as_sheets_id(url)
+gs <- url %>% 
+  as_sheets_id()
 
-fb <- googlesheets4::range_read(ss = gs, sheet = "fb")
-
-
-
-
-
-
-
-
-
-
-
-
+fb <- gs %>% 
+  range_read(sheet = "fb")
 
 
 
