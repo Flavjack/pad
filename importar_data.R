@@ -40,12 +40,3 @@ fb <- gs %>%
   range_read(sheet = "fb")
 
 
-
-
-
-
-
-
-
-
-
